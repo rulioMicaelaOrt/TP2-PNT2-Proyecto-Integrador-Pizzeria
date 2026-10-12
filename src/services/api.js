@@ -1,13 +1,13 @@
-// Cliente Axios preparado para TP2.
-// Cuando exista la API de Express, configurá VITE_API_URL en el archivo .env.
-import axios from 'axios'
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
+  baseURL: `${import.meta.env.VITE_SUPABASE_URL}/rest/v1`,
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
+    apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+    Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
   },
-})
+});
 
-export default api
+export default api;

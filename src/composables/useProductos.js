@@ -1,8 +1,9 @@
+
 import { ref, onMounted } from 'vue'
 import { obtenerProductos } from '../services/productosService'
 
+const productos = ref([])
 export function useProductos() {
-  const productos = ref([])
   const cargando = ref(false)
   const error = ref('')
 
@@ -11,7 +12,9 @@ export function useProductos() {
     error.value = ''
 
     try {
-      productos.value = await obtenerProductos()
+      if (productos.value.length === 0) {
+  productos.value = await obtenerProductos()
+}
     } catch (e) {
       error.value = 'No se pudieron cargar los productos.'
       console.error(e)
@@ -20,7 +23,20 @@ export function useProductos() {
     }
   }
 
+  function agregarProducto(nuevoProducto) {
+    productos.value.push({
+      ...nuevoProducto,
+      id: Date.now()
+    })
+  }
+
   onMounted(cargarProductos)
 
-  return { productos, cargando, error, cargarProductos }
+  return {
+    productos,
+    cargando,
+    error,
+    cargarProductos,
+    agregarProducto
+  }
 }

@@ -2,7 +2,9 @@
 import { ref, onMounted } from 'vue'
 import {
   obtenerProductos,
-  crearProducto as guardarProducto
+  crearProducto as guardarProducto,
+  actualizarProducto as modificarProducto,
+  eliminarProducto as borrarProducto
 } from '../services/productosService'
 
 const productos = ref([])
@@ -35,15 +37,47 @@ async function agregarProducto(nuevoProducto) {
     throw e
   }
 }
+async function actualizarProducto(id, producto) {
+  try {
+    let resultado = await modificarProducto(id, producto)
 
+    let indice = productos.value.findIndex(p => p.id === id)
+
+    if (indice !== -1) {
+      productos.value[indice] = resultado
+    }
+
+    return resultado
+
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
 export function useProductos() {
   onMounted(cargarProductos)
 
   return {
-    productos,
-    cargando,
-    error,
-    cargarProductos,
-    agregarProducto
+  productos,
+  cargando,
+  error,
+  cargarProductos,
+  agregarProducto,
+  actualizarProducto,
+  eliminarProducto
+}
+}
+
+async function eliminarProducto(id) {
+  try {
+    await borrarProducto(id)
+
+    productos.value = productos.value.filter(
+      producto => producto.id !== id
+    )
+
+  } catch (error) {
+    console.log(error)
+    throw error
   }
 }

@@ -1,65 +1,77 @@
-// Acceso a productos.
-// Por ahora usamos datos de ejemplo para poder construir la interfaz sin configurar
-// todavía la base de datos. Más adelante podemos reemplazar esto por consultas a
-// Supabase o por llamadas a la API de Express.
-const productosIniciales = [
-  {
-    id: 1,
-    nombre: 'Muzzarella',
-    descripcion: 'Salsa de tomate, mozzarella y aceitunas.',
-    precio: 8500,
-    categoria: 'Clásicas',
-    emoji: '🍕',
-    destacado: true,
-  },
-  {
-    id: 2,
-    nombre: 'Napolitana',
-    descripcion: 'Mozzarella, tomate fresco, ajo y albahaca.',
-    precio: 9800,
-    categoria: 'Clásicas',
-    emoji: '🍅',
-    destacado: true,
-  },
-  {
-    id: 3,
-    nombre: 'Jamón y morrones',
-    descripcion: 'Mozzarella, jamón cocido y morrones asados.',
-    precio: 10500,
-    categoria: 'Especiales',
-    emoji: '🫑',
-    destacado: false,
-  },
-  {
-    id: 4,
-    nombre: 'Cuatro quesos',
-    descripcion: 'Una combinación cremosa de cuatro quesos.',
-    precio: 11200,
-    categoria: 'Especiales',
-    emoji: '🧀',
-    destacado: true,
-  },
-  {
-    id: 5,
-    nombre: 'Fugazzeta',
-    descripcion: 'Mozzarella abundante y cebolla dorada.',
-    precio: 10200,
-    categoria: 'Especiales',
-    emoji: '🧅',
-    destacado: false,
-  },
-  {
-    id: 6,
-    nombre: 'Rúcula y parmesano',
-    descripcion: 'Mozzarella, rúcula fresca y parmesano.',
-    precio: 11000,
-    categoria: 'Especiales',
-    emoji: '🌿',
-    destacado: false,
-  },
-]
 
+import { supabase } from './supabase'
+
+// Obtener todos los productos
 export async function obtenerProductos() {
-  // Simula una función asíncrona: luego se conectará a una fuente real.
-  return productosIniciales
+  const { data, error } = await supabase
+    .from('productos')
+    .select('*')
+    .order('id')
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
+// Crear un producto
+export async function crearProducto(producto) {
+  const { data, error } = await supabase
+    .from('productos')
+    .insert(producto)
+    .select()
+    .single()
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
+// Actualizar un producto
+export async function actualizarProducto(id, producto) {
+  try {
+    let resultado = await supabase
+      .from('productos')
+      .update(producto)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (resultado.error) {
+      throw resultado.error
+    }
+
+    return resultado.data
+
+  } catch (error) {
+    console.log('Error al actualizar producto:', error)
+    throw error
+  }
+}
+
+
+// Eliminar un producto
+export async function eliminarProducto(id) {
+  try {
+    let resultado = await supabase
+      .from('productos')
+      .delete()
+      .eq('id', id)
+      .select()
+
+    if (resultado.error) {
+      throw resultado.error
+    }
+
+    if (resultado.data.length === 0) {
+      throw new Error('No se encontró ningún producto para eliminar.')
+    }
+
+  } catch (error) {
+    console.log('Error al eliminar producto:', error)
+    throw error
+  }
 }

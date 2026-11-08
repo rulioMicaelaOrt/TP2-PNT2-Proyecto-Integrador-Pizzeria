@@ -42,6 +42,7 @@ async function cerrarSesion() {
 
       <nav class="main-nav" aria-label="Navegación principal">
         <RouterLink to="/">Inicio</RouterLink>
+
         <RouterLink to="/pizzas">Nuestras pizzas</RouterLink>
 
         <RouterLink to="/carrito">
@@ -51,10 +52,18 @@ async function cerrarSesion() {
             {{ cantidadTotal }}
           </span>
         </RouterLink>
-
-        <RouterLink v-if="esAdministrador" to="/admin">
-          Administración
+        <RouterLink v-if="usuario" to="/mi-perfil">
+          Mi perfil
         </RouterLink>
+        <template v-if="esAdministrador">
+          <RouterLink to="/admin">
+            Admin. productos
+          </RouterLink>
+
+          <RouterLink to="/admin/clientes">
+            Admin. clientes
+          </RouterLink>
+        </template>
       </nav>
 
       <div>

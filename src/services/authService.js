@@ -30,7 +30,8 @@ export async function cerrarSesion() {
   }
 }
 
-export async function registrarUsuario(email, password) {
+
+export async function registrarUsuario(email, password, datosCliente) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password
@@ -40,5 +41,21 @@ export async function registrarUsuario(email, password) {
     throw error
   }
 
+  const { error: errorCliente } = await supabase
+    .from('clientes')
+    .insert({
+      id: data.user.id,
+      nombre: datosCliente.nombre,
+      email,
+      telefono: datosCliente.telefono,
+      direccion: datosCliente.direccion
+    })
+
+  if (errorCliente) {
+    throw errorCliente
+  }
+
   return data
 }
+
+

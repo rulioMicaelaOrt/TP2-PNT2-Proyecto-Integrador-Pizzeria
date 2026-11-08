@@ -1391,3 +1391,238 @@ input:focus-visible {
     flex-direction: column;
   }
 }
+
+/* =========================
+   ADMINISTRACIÓN DE CLIENTES
+   ========================= */
+
+.admin-clientes {
+  padding-top: 55px;
+}
+
+.admin-clientes h1 {
+  margin: 0 0 30px;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(35px, 4vw, 48px);
+  letter-spacing: -1.5px;
+}
+
+.admin-clientes h2 {
+  margin: 0 0 22px;
+  font-family: "Playfair Display", serif;
+  font-size: 27px;
+}
+
+/* TABLA */
+
+.admin-clientes table {
+  width: 100%;
+  margin-top: 25px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffdf9;
+  font-size: 13px;
+}
+
+.admin-clientes th {
+  padding: 16px;
+  background: #f7eddf;
+  color: var(--ink);
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.admin-clientes td {
+  padding: 15px 16px;
+  border-top: 1px solid var(--line);
+  color: #62594f;
+}
+
+.admin-clientes tbody tr:hover {
+  background: #fffaf3;
+}
+
+/* BOTONES */
+
+.admin-clientes button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--red);
+  border-radius: 4px;
+  background: var(--red);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.admin-clientes button:hover {
+  background: var(--red-dark);
+}
+
+.admin-clientes td button + button {
+  margin-left: 8px;
+  border-color: var(--line);
+  background: white;
+  color: var(--ink);
+}
+
+.admin-clientes td button + button:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: #fffaf3;
+}
+
+/* FORMULARIO DE EDICIÓN */
+
+.admin-clientes .formulario {
+  margin-top: 35px;
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fffdf9;
+  box-shadow: 0 8px 25px #44281708;
+}
+
+.admin-clientes form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.admin-clientes form label {
+  display: flex;
+  flex: 1 1 250px;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.admin-clientes form input {
+  width: 100%;
+  min-height: 44px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.admin-clientes form input:focus {
+  outline: 2px solid #e8a35a;
+  outline-offset: 1px;
+}
+
+.admin-clientes form button {
+  align-self: flex-end;
+}
+
+/* MENSAJES */
+
+.admin-clientes .mensaje-exito {
+  margin: 20px 0;
+  color: var(--green);
+  font-size: 13px;
+}
+
+.admin-clientes .mensaje-error {
+  margin: 20px 0;
+  color: var(--red);
+  font-size: 13px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+  .admin-clientes {
+    padding-top: 35px;
+  }
+
+  .admin-clientes table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .admin-clientes .formulario {
+    padding: 20px;
+  }
+
+  .admin-clientes form {
+    flex-direction: column;
+  }
+
+  .admin-clientes form label {
+    flex: 1 1 auto;
+  }
+
+  .admin-clientes form button {
+    width: 100%;
+  }
+}
+
+/* MI PERFIL */
+
+.perfil-page {
+  max-width: 700px;
+}
+
+.perfil-description {
+  color: var(--ink);
+  opacity: 0.75;
+  margin-bottom: 2rem;
+}
+
+.perfil-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.perfil-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.perfil-form .form-group label {
+  font-weight: 600;
+}
+
+.perfil-form .form-group input {
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  width: 100%;
+}
+
+.perfil-form .form-group input:disabled {
+  background: var(--cream);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.perfil-form .form-group small {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.perfil-success {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.perfil-error {
+  color: var(--red);
+  font-weight: 600;
+}

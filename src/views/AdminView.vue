@@ -1,15 +1,17 @@
 
 <template>
   <main class="container page-section admin-page">
+
+    <!-- ENCABEZADO -->
     <div class="admin-heading">
       <div class="eyebrow">PANEL DE CONTROL</div>
-      <h1 class="page-title">Administrar productos<span>.</span></h1>
+      <h1 class="page-title">Administración<span>.</span></h1>
       <p class="page-intro">
-        Gestioná el menú de La Masa: agregá, editá o eliminá pizzas.
+        Gestioná los productos de La Masa.
       </p>
     </div>
 
-    <!-- FORMULARIO -->
+    <!-- FORMULARIO PRODUCTOS -->
     <section class="admin-form-card">
       <div class="admin-section-heading">
         <div>
@@ -18,6 +20,7 @@
           </span>
           <h2>{{ editando ? 'Editar producto' : 'Agregar producto' }}</h2>
         </div>
+
         <span class="admin-pizza-icon">🍕</span>
       </div>
 
@@ -25,27 +28,51 @@
         <div class="admin-fields">
           <label>
             Nombre
-            <input v-model="producto.nombre" type="text" placeholder="Ej. Muzza" required />
+            <input
+              v-model="producto.nombre"
+              type="text"
+              placeholder="Ej. Muzza"
+              required
+            />
           </label>
 
           <label>
             Descripción
-            <textarea v-model="producto.descripcion" placeholder="Ingredientes y detalles..." required></textarea>
+            <textarea
+              v-model="producto.descripcion"
+              placeholder="Ingredientes y detalles..."
+              required
+            ></textarea>
           </label>
 
           <label>
             Precio
-            <input v-model.number="producto.precio" type="number" min="0" placeholder="10000" required />
+            <input
+              v-model.number="producto.precio"
+              type="number"
+              min="0"
+              placeholder="10000"
+              required
+            />
           </label>
 
           <label>
             Categoría
-            <input v-model="producto.categoria" type="text" placeholder="Ej. Clásicas" required />
+            <input
+              v-model="producto.categoria"
+              type="text"
+              placeholder="Ej. Clásicas"
+              required
+            />
           </label>
 
           <label class="admin-field-full">
             URL de imagen
-            <input v-model="producto.imagen" type="url" placeholder="https://..." />
+            <input
+              v-model="producto.imagen"
+              type="url"
+              placeholder="https://..."
+            />
           </label>
         </div>
 
@@ -71,17 +98,25 @@
           </button>
         </div>
 
-        <p v-if="mensaje" class="admin-message admin-success" role="status">
+        <p
+          v-if="mensaje"
+          class="admin-message admin-success"
+          role="status"
+        >
           {{ mensaje }}
         </p>
 
-        <p v-if="error" class="admin-message admin-error" role="alert">
+        <p
+          v-if="error"
+          class="admin-message admin-error"
+          role="alert"
+        >
           {{ error }}
         </p>
       </form>
     </section>
 
-    <!-- LISTADO -->
+    <!-- LISTADO PRODUCTOS -->
     <section class="admin-products-section">
       <div class="admin-section-heading admin-list-heading">
         <div>
@@ -106,7 +141,10 @@
               :src="productoExistente.imagen"
               :alt="productoExistente.nombre"
             />
-            <span v-else>{{ productoExistente.emoji || '🍕' }}</span>
+
+            <span v-else>
+              {{ productoExistente.emoji || '🍕' }}
+            </span>
           </div>
 
           <div class="admin-product-info">
@@ -148,10 +186,12 @@
         Todavía no hay productos cargados.
       </p>
     </section>
+
   </main>
 </template>
 
 <script setup>
+
 import { ref } from 'vue'
 import { useProductos } from '../composables/useProductos'
 

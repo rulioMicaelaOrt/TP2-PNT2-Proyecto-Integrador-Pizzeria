@@ -3,6 +3,9 @@
 import { ref } from 'vue'
 import { registrarUsuario } from '../services/authService'
 
+const nombre = ref('')
+const telefono = ref('')
+const direccion = ref('')
 const email = ref('')
 const password = ref('')
 const confirmarPassword = ref('')
@@ -10,12 +13,13 @@ const mensaje = ref('')
 const error = ref('')
 const cargando = ref(false)
 
+
 async function registrarse() {
   mensaje.value = ''
   error.value = ''
 
-  if (!email.value || !password.value || !confirmarPassword.value) {
-    error.value = 'Completá todos los campos.'
+  if (!nombre.value || !email.value || !password.value || !confirmarPassword.value) {
+    error.value = 'Completá todos los campos obligatorios.'
     return
   }
 
@@ -32,16 +36,26 @@ async function registrarse() {
   cargando.value = true
 
   try {
-    await registrarUsuario(email.value, password.value)
+    await registrarUsuario(email.value, password.value, {
+      nombre: nombre.value,
+      telefono: telefono.value,
+      direccion: direccion.value
+    })
 
     mensaje.value = '¡Cuenta creada correctamente!'
   } catch (e) {
     console.error(e)
-    error.value = 'No se pudo crear la cuenta. Revisá los datos ingresados.'
+
+    if (e.message === 'User already registered') {
+      error.value = 'Este correo ya está registrado. Iniciá sesión o recuperá tu contraseña.'
+    } else {
+      error.value = 'No se pudo crear la cuenta. Intentá nuevamente.'
+    }
   } finally {
     cargando.value = false
   }
 }
+
 </script>
 
 <template>
@@ -60,7 +74,31 @@ async function registrarse() {
 
     <form class="login-card" @submit.prevent="registrarse">
       <h2>Crear cuenta</h2>
+      
+<label for="nombre">Nombre completo</label>
+<input
+  id="nombre"
+  v-model.trim="nombre"
+  type="text"
+  placeholder="Tu nombre"
+  required
+/>
 
+<label for="telefono">Teléfono</label>
+<input
+  id="telefono"
+  v-model.trim="telefono"
+  type="tel"
+  placeholder="Tu teléfono"
+/>
+
+<label for="direccion">Dirección</label>
+<input
+  id="direccion"
+  v-model.trim="direccion"
+  type="text"
+  placeholder="Tu dirección"
+/>
       <label for="email">Correo electrónico</label>
       <input
         id="email"

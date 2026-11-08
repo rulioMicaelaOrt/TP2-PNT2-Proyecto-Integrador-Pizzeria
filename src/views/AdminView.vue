@@ -1,94 +1,197 @@
 
 <template>
-  <main>
-    <h1>Administrar productos</h1>
+  <main class="container page-section admin-page">
 
-    <section>
-      <h2>{{ editando ? 'Editar producto' : 'Agregar producto' }}</h2>
+    <!-- ENCABEZADO -->
+    <div class="admin-heading">
+      <div class="eyebrow">PANEL DE CONTROL</div>
+      <h1 class="page-title">Administración<span>.</span></h1>
+      <p class="page-intro">
+        Gestioná los productos de La Masa.
+      </p>
+    </div>
 
-      <form @submit.prevent="crearProducto">
-        <label>
-          Nombre
-          <input v-model="producto.nombre" type="text" required />
-        </label>
+    <!-- FORMULARIO PRODUCTOS -->
+    <section class="admin-form-card">
+      <div class="admin-section-heading">
+        <div>
+          <span class="admin-label">
+            {{ editando ? 'MODIFICACIÓN' : 'NUEVO PRODUCTO' }}
+          </span>
+          <h2>{{ editando ? 'Editar producto' : 'Agregar producto' }}</h2>
+        </div>
 
-        <label>
-          Descripción
-          <textarea v-model="producto.descripcion" required></textarea>
-        </label>
+        <span class="admin-pizza-icon">🍕</span>
+      </div>
 
-        <label>
-          Precio
-          <input
-            v-model.number="producto.precio"
-            type="number"
-            min="0"
-            required
-          />
-        </label>
+      <form class="admin-form" @submit.prevent="crearProducto">
+        <div class="admin-fields">
+          <label>
+            Nombre
+            <input
+              v-model="producto.nombre"
+              type="text"
+              placeholder="Ej. Muzza"
+              required
+            />
+          </label>
 
-        <label>
-          Categoría
-          <input v-model="producto.categoria" type="text" required />
-        </label>
+          <label>
+            Descripción
+            <textarea
+              v-model="producto.descripcion"
+              placeholder="Ingredientes y detalles..."
+              required
+            ></textarea>
+          </label>
 
-        <label>
-          URL de imagen
-          <input v-model="producto.imagen" type="url" />
-        </label>
+          <label>
+            Precio
+            <input
+              v-model.number="producto.precio"
+              type="number"
+              min="0"
+              placeholder="10000"
+              required
+            />
+          </label>
 
-        <button type="submit" :disabled="guardando">
-          {{
-            guardando
-              ? 'Guardando...'
-              : editando
-                ? 'Guardar cambios'
-                : 'Agregar producto'
-          }}
-        </button>
+          <label>
+            Categoría
+            <input
+              v-model="producto.categoria"
+              type="text"
+              placeholder="Ej. Clásicas"
+              required
+            />
+          </label>
 
-        <button
-          v-if="editando"
-          type="button"
-          @click="cancelarEdicion"
-          :disabled="guardando"
+          <label class="admin-field-full">
+            URL de imagen
+            <input
+              v-model="producto.imagen"
+              type="url"
+              placeholder="https://..."
+            />
+          </label>
+        </div>
+
+        <div class="admin-form-actions">
+          <button class="button" type="submit" :disabled="guardando">
+            {{
+              guardando
+                ? 'Guardando...'
+                : editando
+                  ? 'Guardar cambios'
+                  : 'Agregar producto'
+            }}
+          </button>
+
+          <button
+            v-if="editando"
+            class="admin-button-secondary"
+            type="button"
+            @click="cancelarEdicion"
+            :disabled="guardando"
+          >
+            Cancelar
+          </button>
+        </div>
+
+        <p
+          v-if="mensaje"
+          class="admin-message admin-success"
+          role="status"
         >
-          Cancelar edición
-        </button>
+          {{ mensaje }}
+        </p>
 
-        <p v-if="mensaje">{{ mensaje }}</p>
-        <p v-if="error">{{ error }}</p>
+        <p
+          v-if="error"
+          class="admin-message admin-error"
+          role="alert"
+        >
+          {{ error }}
+        </p>
       </form>
     </section>
 
-    <section>
-      <h2>Productos existentes</h2>
+    <!-- LISTADO PRODUCTOS -->
+    <section class="admin-products-section">
+      <div class="admin-section-heading admin-list-heading">
+        <div>
+          <span class="admin-label">MENÚ</span>
+          <h2>Productos existentes</h2>
+        </div>
 
-      <div v-for="productoExistente in productos" :key="productoExistente.id">
-        <p>
-          {{ productoExistente.nombre }} - ${{ productoExistente.precio }}
-
-          <button
-            type="button"
-            @click="editarProducto(productoExistente)"
-          >
-            Editar
-          </button>
-
-          <button
-            type="button"
-            @click="eliminarProducto(productoExistente)"
-            :disabled="guardando"
-          >
-            Eliminar
-          </button>
-        </p>
+        <span class="admin-products-count">
+          {{ productos.length }} productos
+        </span>
       </div>
+
+      <div v-if="productos.length" class="admin-products-grid">
+        <article
+          v-for="productoExistente in productos"
+          :key="productoExistente.id"
+          class="admin-product-card"
+        >
+          <div class="admin-product-image">
+            <img
+              v-if="productoExistente.imagen"
+              :src="productoExistente.imagen"
+              :alt="productoExistente.nombre"
+            />
+
+            <span v-else>
+              {{ productoExistente.emoji || '🍕' }}
+            </span>
+          </div>
+
+          <div class="admin-product-info">
+            <span class="admin-product-category">
+              {{ productoExistente.categoria || 'Pizza' }}
+            </span>
+
+            <h3>{{ productoExistente.nombre }}</h3>
+
+            <p>{{ productoExistente.descripcion }}</p>
+
+            <strong class="admin-product-price">
+              ${{ productoExistente.precio }}
+            </strong>
+
+            <div class="admin-product-actions">
+              <button
+                class="admin-button-edit"
+                type="button"
+                @click="editarProducto(productoExistente)"
+              >
+                Editar
+              </button>
+
+              <button
+                class="admin-button-delete"
+                type="button"
+                @click="eliminarProducto(productoExistente)"
+                :disabled="guardando"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <p v-else class="admin-empty">
+        Todavía no hay productos cargados.
+      </p>
     </section>
+
   </main>
 </template>
 
 <script setup>
+
 import { ref } from 'vue'
 import { useProductos } from '../composables/useProductos'
 
@@ -168,7 +271,6 @@ async function crearProducto() {
     error.value = editando.value
       ? 'No se pudo actualizar el producto.'
       : 'No se pudo guardar el producto.'
-      
 
     console.error(e)
   } finally {

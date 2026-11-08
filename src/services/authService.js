@@ -1,5 +1,6 @@
-// Acá centralizaremos el inicio y cierre de sesión.
-// Implementaremos las funciones cuando definamos cómo será el login de la consigna.
+
+import { supabase } from './supabase'
+
 export function validarFormularioLogin(email, password) {
   if (!email || !password) {
     return 'Completá el correo y la contraseña.'
@@ -7,3 +8,54 @@ export function validarFormularioLogin(email, password) {
 
   return null
 }
+
+export async function iniciarSesion(email, password) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  })
+
+  if (error) {
+    throw error
+  }
+
+  return data.user
+}
+
+export async function cerrarSesion() {
+  const { error } = await supabase.auth.signOut()
+
+  if (error) {
+    throw error
+  }
+}
+
+
+export async function registrarUsuario(email, password, datosCliente) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password
+  })
+
+  if (error) {
+    throw error
+  }
+
+  const { error: errorCliente } = await supabase
+    .from('clientes')
+    .insert({
+      id: data.user.id,
+      nombre: datosCliente.nombre,
+      email,
+      telefono: datosCliente.telefono,
+      direccion: datosCliente.direccion
+    })
+
+  if (errorCliente) {
+    throw errorCliente
+  }
+
+  return data
+}
+
+

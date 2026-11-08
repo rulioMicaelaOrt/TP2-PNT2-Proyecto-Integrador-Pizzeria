@@ -54,19 +54,6 @@ async function actualizarProducto(id, producto) {
     throw error
   }
 }
-export function useProductos() {
-  onMounted(cargarProductos)
-
-  return {
-  productos,
-  cargando,
-  error,
-  cargarProductos,
-  agregarProducto,
-  actualizarProducto,
-  eliminarProducto
-}
-}
 
 async function eliminarProducto(id) {
   try {
@@ -80,4 +67,17 @@ async function eliminarProducto(id) {
     console.log(error)
     throw error
   }
+}
+export function useProductos() {
+  onMounted(cargarProductos)
+
+  return {
+  productos,
+  cargando,
+  error,
+  cargarProductos,
+  agregarProducto,
+  actualizarProducto,
+  eliminarProducto
+}
 }

@@ -150,6 +150,7 @@
           <div class="admin-product-info">
             <span class="admin-product-category">
               {{ productoExistente.categoria || 'Pizza' }}
+              · {{ productoExistente.activo ? 'Activo' : 'Inactivo' }}
             </span>
 
             <h3>{{ productoExistente.nombre }}</h3>
@@ -172,10 +173,10 @@
               <button
                 class="admin-button-delete"
                 type="button"
-                @click="eliminarProducto(productoExistente)"
+                @click="cambiarEstado(productoExistente)"
                 :disabled="guardando"
               >
-                Eliminar
+                {{ productoExistente.activo ? 'Desactivar' : 'Activar' }}
               </button>
             </div>
           </div>
@@ -199,7 +200,7 @@ const {
   productos,
   agregarProducto,
   actualizarProducto,
-  eliminarProducto: borrarProducto
+  cambiarEstadoProducto
 } = useProductos()
 
 const guardando = ref(false)
@@ -215,7 +216,8 @@ const producto = ref({
   categoria: '',
   imagen: '',
   emoji: '🍕',
-  destacado: false
+  destacado: false,
+  activo: true
 })
 
 function limpiarFormulario() {
@@ -226,7 +228,8 @@ function limpiarFormulario() {
     categoria: '',
     imagen: '',
     emoji: '🍕',
-    destacado: false
+    destacado: false,
+    activo: true
   }
 
   editando.value = false
@@ -278,9 +281,12 @@ async function crearProducto() {
   }
 }
 
-async function eliminarProducto(productoSeleccionado) {
+async function cambiarEstado(productoSeleccionado) {
+  const nuevoEstado = !productoSeleccionado.activo
+  const accion = nuevoEstado ? 'activar' : 'desactivar'
+
   const confirmar = window.confirm(
-    `¿Seguro que querés eliminar ${productoSeleccionado.nombre}?`
+    `¿Seguro que querés ${accion} ${productoSeleccionado.nombre}?`
   )
 
   if (!confirmar) return
@@ -290,15 +296,13 @@ async function eliminarProducto(productoSeleccionado) {
   error.value = ''
 
   try {
-    await borrarProducto(productoSeleccionado.id)
+    await cambiarEstadoProducto(productoSeleccionado.id, nuevoEstado)
 
-    mensaje.value = 'Producto eliminado correctamente.'
-
-    if (idProductoEditando.value === productoSeleccionado.id) {
-      limpiarFormulario()
-    }
+    mensaje.value = nuevoEstado
+      ? 'Producto activado correctamente.'
+      : 'Producto desactivado correctamente.'
   } catch (e) {
-    error.value = 'No se pudo eliminar el producto.'
+    error.value = 'No se pudo cambiar el estado del producto.'
     console.error(e)
   } finally {
     guardando.value = false

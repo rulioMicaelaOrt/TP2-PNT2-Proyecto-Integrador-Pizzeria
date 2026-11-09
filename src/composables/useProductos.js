@@ -4,6 +4,7 @@ import {
   obtenerProductos,
   crearProducto as guardarProducto,
   actualizarProducto as modificarProducto,
+  cambiarEstadoProducto as actualizarEstadoProducto,
   eliminarProducto as borrarProducto
 } from '../services/productosService'
 
@@ -55,6 +56,23 @@ async function actualizarProducto(id, producto) {
   }
 }
 
+async function cambiarEstadoProducto(id, activo) {
+  try {
+    const resultado = await actualizarEstadoProducto(id, activo)
+
+    const indice = productos.value.findIndex(p => p.id === id)
+
+    if (indice !== -1) {
+      productos.value[indice] = resultado
+    }
+
+    return resultado
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
 async function eliminarProducto(id) {
   try {
     await borrarProducto(id)
@@ -72,12 +90,13 @@ export function useProductos() {
   onMounted(cargarProductos)
 
   return {
-  productos,
-  cargando,
-  error,
-  cargarProductos,
-  agregarProducto,
-  actualizarProducto,
-  eliminarProducto
-}
+    productos,
+    cargando,
+    error,
+    cargarProductos,
+    agregarProducto,
+    actualizarProducto,
+    cambiarEstadoProducto,
+    eliminarProducto
+  }
 }

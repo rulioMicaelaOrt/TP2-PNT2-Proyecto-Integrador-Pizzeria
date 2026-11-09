@@ -53,6 +53,22 @@ export async function actualizarProducto(id, producto) {
 }
 
 
+// Cambiar estado activo/inactivo de un producto (borrado lógico)
+export async function cambiarEstadoProducto(id, activo) {
+  const { data, error } = await supabase
+    .from('productos')
+    .update({ activo })
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
 // Eliminar un producto
 export async function eliminarProducto(id) {
   try {

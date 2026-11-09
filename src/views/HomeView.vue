@@ -10,7 +10,9 @@ const { agregar } = useCarrito();
 const mensaje = ref("");
 
 const destacados = computed(() =>
-  productos.value.filter((producto) => producto.destacado).slice(0, 3),
+  productos.value
+    .filter((producto) => producto.activo && producto.destacado)
+    .slice(0, 3),
 );
 
 function agregarAlPedido(producto) {

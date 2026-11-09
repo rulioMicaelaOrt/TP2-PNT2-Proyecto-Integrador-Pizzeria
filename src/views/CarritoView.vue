@@ -1,8 +1,18 @@
 <script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { useCarrito } from "../composables/useCarrito";
+import { useAuth } from "../composables/useAuth";
+import { usePedidos } from "../composables/usePedidos";
 
 const { items, cantidadTotal, total, aumentar, disminuir, eliminar, vaciar } =
   useCarrito();
+const { usuario } = useAuth();
+const { registrarPedido, cargando } = usePedidos();
+const router = useRouter();
+
+const mensajeExito = ref("");
+const errorCompra = ref("");
 
 function formatoPrecio(precio) {
   return new Intl.NumberFormat("es-AR", {
@@ -11,12 +21,45 @@ function formatoPrecio(precio) {
     maximumFractionDigits: 0,
   }).format(precio);
 }
+
+async function confirmarCompra() {
+  mensajeExito.value = "";
+  errorCompra.value = "";
+
+  if (!usuario.value) {
+    await router.push("/login");
+    return;
+  }
+
+  try {
+    await registrarPedido({
+      cliente_id: usuario.value.id,
+      total: total.value,
+      items: items.value,
+    });
+
+    vaciar();
+    mensajeExito.value = "¡Tu compra fue confirmada correctamente!";
+  } catch (e) {
+    console.error("Error al confirmar compra:", e);
+    errorCompra.value =
+      e.message || "No se pudo confirmar la compra. Intentá nuevamente.";
+  }
+}
 </script>
 
 <template>
   <section class="container page-section">
     <div class="eyebrow">TU PEDIDO</div>
     <h1 class="page-title">Tu carrito<span>.</span></h1>
+
+    <p v-if="mensajeExito" class="admin-message admin-success" role="status">
+      {{ mensajeExito }}
+    </p>
+
+    <p v-if="errorCompra" class="admin-message admin-error" role="alert">
+      {{ errorCompra }}
+    </p>
 
     <div v-if="items.length === 0" class="centered-page">
       <div class="empty-cart-icon">🛒</div>
@@ -60,6 +103,14 @@ function formatoPrecio(precio) {
         <h2>Total: {{ formatoPrecio(total) }}</h2>
 
         <div class="cart-summary-actions">
+          <button
+            type="button"
+            class="button cart-confirm-button"
+            :disabled="cargando"
+            @click="confirmarCompra"
+          >
+            {{ cargando ? "Confirmando..." : "Confirmar compra →" }}
+          </button>
           <RouterLink class="button" to="/pizzas">
             Seguir comprando
           </RouterLink>

@@ -3,6 +3,7 @@
 import { ref, onMounted } from 'vue'
 import { useAuth } from '../composables/useAuth'
 import { useClientes } from '../composables/useClientes'
+import { usePedidos } from '../composables/usePedidos'
 
 const { usuario } = useAuth()
 
@@ -11,6 +12,12 @@ const {
   cargarCliente,
   modificarCliente
 } = useClientes()
+
+const {
+  pedidos,
+  cargando: cargandoPedidos,
+  cargarPedidosCliente
+} = usePedidos()
 
 const nombre = ref('')
 const telefono = ref('')
@@ -33,6 +40,7 @@ onMounted(async () => {
     }
 
     await cargarCliente(usuario.value.id)
+    await cargarPedidosCliente(usuario.value.id)
 
     nombre.value = cliente.value.nombre
     telefono.value = cliente.value.telefono || ''
@@ -66,6 +74,24 @@ async function guardarCambios() {
   } finally {
     guardando.value = false
   }
+}
+
+function formatoPrecio(precio) {
+  return new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    maximumFractionDigits: 0
+  }).format(precio)
+}
+
+function formatoFecha(fecha) {
+  return new Date(fecha).toLocaleDateString('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
 }
 </script>
 
@@ -122,6 +148,42 @@ async function guardarCambios() {
       </p>
 
     </form>
+
+    <section class="historial-section">
+      <h2>Historial de pedidos</h2>
+
+      <p v-if="cargandoPedidos">
+        Cargando pedidos...
+      </p>
+
+      <p v-else-if="pedidos.length === 0" class="perfil-description">
+        Todavía no realizaste ningún pedido.
+      </p>
+
+      <div v-else class="historial-list">
+        <article
+          v-for="pedido in pedidos"
+          :key="pedido.id"
+          class="pedido-card"
+        >
+          <div class="pedido-header">
+            <strong>Pedido #{{ pedido.id }}</strong>
+            <span>{{ formatoFecha(pedido.created_at) }}</span>
+          </div>
+
+          <ul class="pedido-items">
+            <li v-for="item in pedido.items" :key="item.id">
+              <span>{{ item.emoji }} {{ item.cantidad }}x {{ item.nombre }}</span>
+              <span>{{ formatoPrecio(item.precio * item.cantidad) }}</span>
+            </li>
+          </ul>
+
+          <div class="pedido-footer">
+            <strong>Total: {{ formatoPrecio(pedido.total) }}</strong>
+          </div>
+        </article>
+      </div>
+    </section>
 
   </main>
 </template>

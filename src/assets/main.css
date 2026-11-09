@@ -1027,6 +1027,17 @@ input:focus-visible {
   background: white;
 }
 
+.cart-summary-actions button.cart-confirm-button {
+  border-color: var(--red);
+  background: var(--red);
+  color: white;
+}
+
+.cart-summary-actions button.cart-confirm-button:hover {
+  background: var(--red-dark);
+  color: white;
+}
+
 @media (max-width: 800px) {
   .cart-content {
     grid-template-columns: 1fr;

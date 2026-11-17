@@ -14,6 +14,8 @@ const mensaje = ref("");
 
 const productosFiltrados = computed(() => {
   return productos.value.filter((producto) => {
+    if (!producto.activo) return false;
+
     const coincideCategoria =
       categoria.value === "Todas" || producto.categoria === categoria.value;
 
